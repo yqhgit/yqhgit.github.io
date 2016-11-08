@@ -1,0 +1,394 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    
+    <title>Mr.Young</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    
+        <meta name="keywords" content="" />
+    
+    <meta name="description" content="Java技能之：用注解实现接口映射前景介绍 　　注解是java1.5之后引入的特性，之前写web应用时通常都是通过在web.xml配置servlet和url的映射，这种情况web应用接口数量庞大不说开发人员通常需要写多个servlet或者是在单个servlet中完成url的判断后再引入到业务逻辑，而注解映射相比显得非常简洁，由于少了xml配置和xml的解析功能使得开发效率也有很大的提升。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Mr.Young">
+<meta property="og:url" content="http://yoursite.com/2016/11/08/urlmapping/index.html">
+<meta property="og:site_name" content="Mr.Young">
+<meta property="og:description" content="Java技能之：用注解实现接口映射前景介绍 　　注解是java1.5之后引入的特性，之前写web应用时通常都是通过在web.xml配置servlet和url的映射，这种情况web应用接口数量庞大不说开发人员通常需要写多个servlet或者是在单个servlet中完成url的判断后再引入到业务逻辑，而注解映射相比显得非常简洁，由于少了xml配置和xml的解析功能使得开发效率也有很大的提升。">
+<meta property="og:updated_time" content="2016-11-08T13:33:39.015Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Mr.Young">
+<meta name="twitter:description" content="Java技能之：用注解实现接口映射前景介绍 　　注解是java1.5之后引入的特性，之前写web应用时通常都是通过在web.xml配置servlet和url的映射，这种情况web应用接口数量庞大不说开发人员通常需要写多个servlet或者是在单个servlet中完成url的判断后再引入到业务逻辑，而注解映射相比显得非常简洁，由于少了xml配置和xml的解析功能使得开发效率也有很大的提升。">
+    
+
+    
+
+    
+
+    <link rel="stylesheet" href="/vendor/font-awesome/css/font-awesome.min.css">
+    <link rel="stylesheet" href="/vendor/titillium-web/styles.css">
+    <link rel="stylesheet" href="/vendor/source-code-pro/styles.css">
+
+    <link rel="stylesheet" href="/css/style.css">
+
+    <script src="/vendor/jquery/2.0.3/jquery.min.js"></script>
+    
+    
+        <link rel="stylesheet" href="/vendor/lightgallery/css/lightgallery.min.css">
+    
+    
+    
+        <script>
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "//hm.baidu.com/hm.js?&lt;script&gt;var _hmt = _hmt || [];(function() {var hm = document.createElement(&quot;script&quot;);hm.src = &quot;https://hm.baidu.com/hm.js?da57c5b9c5d37af6b225b65fd9236cbc&quot;;var s = document.getElementsByTagName(&quot;script&quot;)[0]; s.parentNode.insertBefore(hm, s);})();&lt;/script&gt;";
+  var s = document.getElementsByTagName("script")[0];
+  s.parentNode.insertBefore(hm, s);
+})();
+</script>
+
+    
+
+</head>
+
+<body>
+    <div id="wrap">
+        <header id="header">
+    <div id="header-outer" class="outer">
+        <div class="container">
+            <div class="container-inner">
+                <div id="header-title">
+                    <h1 class="logo-wrap">
+                        <a href="/" class="logo"></a>
+                    </h1>
+                    
+                </div>
+                <div id="header-inner" class="nav-container">
+                    <a id="main-nav-toggle" class="nav-icon fa fa-bars"></a>
+                    <div class="nav-container-inner">
+                        <ul id="main-nav">
+                            
+                                <li class="main-nav-list-item" >
+                                    <a class="main-nav-list-link" href="/">主页</a>
+                                </li>
+                            
+                        </ul>
+                        <nav id="sub-nav">
+                            <div id="search-form-wrap">
+
+    <form class="search-form">
+        <input type="text" class="ins-search-input search-form-input" placeholder="搜索" />
+        <button type="submit" class="search-form-submit"></button>
+    </form>
+    <div class="ins-search">
+    <div class="ins-search-mask"></div>
+    <div class="ins-search-container">
+        <div class="ins-input-wrapper">
+            <input type="text" class="ins-search-input" placeholder="想要查找什么..." />
+            <span class="ins-close ins-selectable"><i class="fa fa-times-circle"></i></span>
+        </div>
+        <div class="ins-section-wrapper">
+            <div class="ins-section-container"></div>
+        </div>
+    </div>
+</div>
+<script>
+(function (window) {
+    var INSIGHT_CONFIG = {
+        TRANSLATION: {
+            POSTS: '文章',
+            PAGES: '页面',
+            CATEGORIES: '分类',
+            TAGS: '标签',
+            UNTITLED: '(未命名)',
+        },
+        ROOT_URL: '/',
+        CONTENT_URL: '/content.json',
+    };
+    window.INSIGHT_CONFIG = INSIGHT_CONFIG;
+})(window);
+</script>
+<script src="/js/insight.js"></script>
+
+</div>
+                        </nav>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+        <div class="container">
+            <div class="main-body container-inner">
+                <div class="main-body-inner">
+                    <section id="main">
+                        <div class="main-body-header">
+    <h1 class="header">
+    
+    未分类
+    </h1>
+</div>
+                        <div class="main-body-content">
+                            <article id="post-urlmapping" class="article article-single article-type-post" itemscope itemprop="blogPost">
+    <div class="article-inner">
+        
+        
+            <div class="article-subtitle">
+                <a href="/2016/11/08/urlmapping/" class="article-date">
+    <time datetime="2016-11-08T13:43:57.337Z" itemprop="datePublished">2016-11-08</time>
+</a>
+                
+            </div>
+        
+        
+        <div class="article-entry" itemprop="articleBody">
+            <h1 id="Java技能之：用注解实现接口映射"><a href="#Java技能之：用注解实现接口映射" class="headerlink" title="Java技能之：用注解实现接口映射"></a>Java技能之：用注解实现接口映射</h1><h2 id="前景介绍"><a href="#前景介绍" class="headerlink" title="前景介绍"></a>前景介绍</h2><p> 　　注解是java1.5之后引入的特性，之前写web应用时通常都是通过在web.xml配置servlet和url的映射，这种情况web应用接口数量庞大不说开发人员通常需要写多个servlet或者是在单个servlet中完成url的判断后再引入到业务逻辑，而注解映射相比显得非常简洁，由于少了xml配置和xml的解析功能使得开发效率也有很大的提升。  </p>
+<p> 　　关于接口映射这块Spring mvc已经有了很好的实现了，但通常我们自己在开发时通常使用DispatchServlet接收到Request后通常需要根据业务场景完成一些预操作，比如参数校验，请求权限或者安全方面的校验成功之后才通过Handler将请求传递到业务逻辑层，所以学会自己开发接口映射显得尤为重要。完成一个接口映射功能其实非常简单，本文将从下面四个步骤来给大家详细介绍。</p>
+<h3 id="定义注解元数据"><a href="#定义注解元数据" class="headerlink" title="定义注解元数据"></a>定义注解元数据</h3><p> 　　由于注解是在运行时统一加载的所以RetentionPolicy为RUNTIME，而一个接口通常对应这一类服务的单个方法所以ElementType为Method类型。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">@Target(ElementType.METHOD)</div><div class="line">@Retention(RetentionPolicy.RUNTIME)</div><div class="line">public @interface UrlMapping &#123;</div><div class="line">	String url() default &quot;&quot;;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<h3 id="注解到接口的映射Map的导出类"><a href="#注解到接口的映射Map的导出类" class="headerlink" title="注解到接口的映射Map的导出类"></a>注解到接口的映射Map的导出类</h3><p>　　这里我们用到了Spring框架的实例工厂功能， 通过该功能来加载所有提供服务的类，即实现了Exportable接口的类，然后在类中查找含有UrlMapping注解的方法，通过反射拿到方法的相关信息创建服务调用单位InvocationUnit，最后加入到Map中，而Map的key为请求的Url，即通过UrlMaping注解映射到url变量的值。<br>这里可以通过Spring的MapFactoryBean完成映射键值对的全局共享。到此我们已经拿到了所有的接口映射的Map，最后需要一个RequestHandler来完成接口的调用即可。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div></pre></td><td class="code"><pre><div class="line">public class ServiceExporter implements InitializingBean, ApplicationContextAware</div><div class="line">&#123;</div><div class="line">	private ApplicationContext appContext;</div><div class="line"></div><div class="line">	private ConcurrentHashMap&lt;String, InvocationUnit&gt; urlMappings;</div><div class="line"></div><div class="line">	public void afterPropertiesSet() throws Exception</div><div class="line">	&#123;</div><div class="line">		Map&lt;String, Exportable&gt; exportMap = appContext.getBeansOfType(Exportable.class);</div><div class="line"></div><div class="line">		convert(new ArrayList&lt;Exportable&gt;(exportMap.values()));</div><div class="line">	&#125;</div><div class="line"></div><div class="line">	public void setApplicationContext(ApplicationContext arg0) throws BeansException</div><div class="line">	&#123;</div><div class="line">		appContext = arg0;</div><div class="line">	&#125;</div><div class="line"></div><div class="line">	@SuppressWarnings(&quot;rawtypes&quot;)</div><div class="line">	private void convert(List&lt;? extends Exportable&gt; list)</div><div class="line">	&#123;</div><div class="line">		for (Exportable exportable : list)</div><div class="line">		&#123;</div><div class="line">			Class clazz = exportable.getClass();</div><div class="line">			Method[] methods = clazz.getMethods();</div><div class="line">			for (Method method : methods)</div><div class="line">			&#123;</div><div class="line">				UrlMapping urlMapping = method.getAnnotation(UrlMapping.class);</div><div class="line">				if(urlMapping == null)&#123;</div><div class="line">					continue;</div><div class="line">				&#125;</div><div class="line">				urlMappings.put(urlMapping.url(), new InvocationUnit(method, clazz, method.getReturnType()));</div><div class="line">			&#125;</div><div class="line">		&#125;</div><div class="line">	&#125;</div><div class="line"></div><div class="line">	public ConcurrentHashMap&lt;String, InvocationUnit&gt; getUrlMappings()</div><div class="line">	&#123;</div><div class="line">		return urlMappings;</div><div class="line">	&#125;</div><div class="line"></div><div class="line">	public void setUrlMappings(ConcurrentHashMap&lt;String, InvocationUnit&gt; urlMappings)</div><div class="line">	&#123;</div><div class="line">		this.urlMappings = urlMappings;</div><div class="line">	&#125;</div><div class="line"></div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<h3 id="请求处理器实现"><a href="#请求处理器实现" class="headerlink" title="请求处理器实现"></a>请求处理器实现</h3><p>这一步很简单对DispatchServlet传递过来的请求通过下面的Handler拿到后，只需要通过request获取请求的url然后在共享的urlMapping中查询对应的服务并通过反射调用服务即可。这里在调用方法的invoke之前会完成request的参数解析功能，解析原理是根据提供服务方法的查询条件类中相关字段名称到HttpServletRequest中查找，所以在定义查询条件类时需要保持http请求参数名和查询条件类中变量一致，这样才能通过反射拿到对应的参数值，对接口返回结果写入到HttpServletResponse中也是一样的道理。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div></pre></td><td class="code"><pre><div class="line">public class HttpRequestHandelr implements Handler</div><div class="line">&#123;</div><div class="line"></div><div class="line">	private static Logger logger = Logger.getLogger(HttpRequestHandelr.class.getSimpleName());</div><div class="line">	private ConcurrentHashMap&lt;String, InvocationUnit&gt; urlMappings;</div><div class="line"></div><div class="line">	public void handle(HttpServletRequest request, HttpServletResponse response)</div><div class="line">	&#123;</div><div class="line">		String url = (String) request.getAttribute(&quot;url&quot;);</div><div class="line"></div><div class="line">		InvocationUnit invocationUnit = urlMappings.get(url);</div><div class="line">		if(invocationUnit == null)&#123;</div><div class="line">			logger.info(&quot;url not found:&quot; + url);</div><div class="line">			return;</div><div class="line">		&#125;</div><div class="line">		//parameter validator ...</div><div class="line">		Object result = invocationUnit.invoke(request);</div><div class="line">		if(result != null)&#123;</div><div class="line">			wirteResponse(result, invocationUnit.getReturnType(), request, response);</div><div class="line">		&#125;</div><div class="line">	&#125;</div><div class="line"></div><div class="line">	private void wirteResponse(Object result, Class&lt;?&gt; returntype, HttpServletRequest request, HttpServletResponse response)</div><div class="line">	&#123;</div><div class="line">		//通过反射拿到返回的结果填充到response中</div><div class="line">	&#125;</div><div class="line"></div><div class="line">	public void setUrlMappings(ConcurrentHashMap&lt;String, InvocationUnit&gt; urlMappings)</div><div class="line">	&#123;</div><div class="line">		this.urlMappings = urlMappings;</div><div class="line">	&#125;</div><div class="line"></div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>InvocationUnit.java<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div><div class="line">60</div><div class="line">61</div><div class="line">62</div><div class="line">63</div><div class="line">64</div><div class="line">65</div><div class="line">66</div><div class="line">67</div><div class="line">68</div><div class="line">69</div><div class="line">70</div><div class="line">71</div><div class="line">72</div><div class="line">73</div><div class="line">74</div><div class="line">75</div><div class="line">76</div><div class="line">77</div><div class="line">78</div><div class="line">79</div><div class="line">80</div><div class="line">81</div><div class="line">82</div><div class="line">83</div><div class="line">84</div><div class="line">85</div><div class="line">86</div><div class="line">87</div><div class="line">88</div><div class="line">89</div><div class="line">90</div><div class="line">91</div><div class="line">92</div><div class="line">93</div><div class="line">94</div><div class="line">95</div><div class="line">96</div><div class="line">97</div><div class="line">98</div><div class="line">99</div><div class="line">100</div><div class="line">101</div><div class="line">102</div><div class="line">103</div><div class="line">104</div><div class="line">105</div><div class="line">106</div><div class="line">107</div><div class="line">108</div><div class="line">109</div><div class="line">110</div><div class="line">111</div><div class="line">112</div><div class="line">113</div><div class="line">114</div><div class="line">115</div><div class="line">116</div><div class="line">117</div><div class="line">118</div></pre></td><td class="code"><pre><div class="line">public class InvocationUnit implements Invoke</div><div class="line">&#123;</div><div class="line"></div><div class="line">	private Method method;</div><div class="line"></div><div class="line">	private Class&lt;?&gt; invocatinoClass;</div><div class="line"></div><div class="line">	private Object[] params;</div><div class="line"></div><div class="line">	private Class&lt;?&gt; returnType;</div><div class="line"></div><div class="line">	public InvocationUnit(Method method, Class&lt;?&gt; invocatinoClass, Class&lt;?&gt; returnType)</div><div class="line">	&#123;</div><div class="line">		this.method = method;</div><div class="line">		this.invocatinoClass = invocatinoClass;</div><div class="line">		this.returnType = returnType;</div><div class="line">	&#125;</div><div class="line"></div><div class="line">	public Object invoke(HttpServletRequest request)</div><div class="line">	&#123;</div><div class="line">		praseParam(request);</div><div class="line">		try</div><div class="line">		&#123;</div><div class="line">			return method.invoke(invocatinoClass.newInstance(), params);</div><div class="line">		&#125;</div><div class="line">		catch (IllegalAccessException e)</div><div class="line">		&#123;</div><div class="line">			// TODO Auto-generated catch block</div><div class="line">			e.printStackTrace();</div><div class="line">		&#125;</div><div class="line">		catch (IllegalArgumentException e)</div><div class="line">		&#123;</div><div class="line">			// TODO Auto-generated catch block</div><div class="line">			e.printStackTrace();</div><div class="line">		&#125;</div><div class="line">		catch (InvocationTargetException e)</div><div class="line">		&#123;</div><div class="line">			// TODO Auto-generated catch block</div><div class="line">			e.printStackTrace();</div><div class="line">		&#125;</div><div class="line">		catch (InstantiationException e)</div><div class="line">		&#123;</div><div class="line">			// TODO Auto-generated catch block</div><div class="line">			e.printStackTrace();</div><div class="line">		&#125;</div><div class="line">		return null;</div><div class="line">	&#125;</div><div class="line"></div><div class="line">	private void praseParam(HttpServletRequest request)</div><div class="line">	&#123;</div><div class="line">		Class&lt;?&gt;[] paramTypes = method.getParameterTypes();</div><div class="line">		try</div><div class="line">		&#123;</div><div class="line">			Class&lt;?&gt; requestType = paramTypes[0];</div><div class="line">			Object object = requestType.newInstance();</div><div class="line">			Field[] fields = requestType.getDeclaredFields();</div><div class="line">			for (Field field : fields)</div><div class="line">			&#123;</div><div class="line">				String fieldName = field.getName();</div><div class="line">				field.setAccessible(true);</div><div class="line">				field.set(object, request.getAttribute(fieldName));</div><div class="line">			&#125;</div><div class="line">			params = new Object[1];</div><div class="line">			params[0] = object;</div><div class="line">		&#125;</div><div class="line">		catch (InstantiationException e)</div><div class="line">		&#123;</div><div class="line">			// TODO Auto-generated catch block</div><div class="line">			e.printStackTrace();</div><div class="line">		&#125;</div><div class="line">		catch (IllegalAccessException e)</div><div class="line">		&#123;</div><div class="line">			// TODO Auto-generated catch block</div><div class="line">			e.printStackTrace();</div><div class="line">		&#125;</div><div class="line">		catch (IllegalArgumentException e)</div><div class="line">		&#123;</div><div class="line">			// TODO Auto-generated catch block</div><div class="line">			e.printStackTrace();</div><div class="line">		&#125;</div><div class="line">	&#125;</div><div class="line"></div><div class="line">	public Method getMethod()</div><div class="line">	&#123;</div><div class="line">		return method;</div><div class="line">	&#125;</div><div class="line"></div><div class="line">	public void setMethod(Method method)</div><div class="line">	&#123;</div><div class="line">		this.method = method;</div><div class="line">	&#125;</div><div class="line"></div><div class="line">	public Class&lt;?&gt; getInvocatinoClass()</div><div class="line">	&#123;</div><div class="line">		return invocatinoClass;</div><div class="line">	&#125;</div><div class="line"></div><div class="line">	public void setInvocatinoClass(Class&lt;?&gt; invocatinoClass)</div><div class="line">	&#123;</div><div class="line">		this.invocatinoClass = invocatinoClass;</div><div class="line">	&#125;</div><div class="line"></div><div class="line">	public Object[] getParams()</div><div class="line">	&#123;</div><div class="line">		return params;</div><div class="line">	&#125;</div><div class="line"></div><div class="line">	public void setParams(Object[] params)</div><div class="line">	&#123;</div><div class="line">		this.params = params;</div><div class="line">	&#125;</div><div class="line"></div><div class="line">	public Class&lt;?&gt; getReturnType()</div><div class="line">	&#123;</div><div class="line">		return returnType;</div><div class="line">	&#125;</div><div class="line"></div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>　　最后不要忘记配置下spring.xml，大功告成，是不是很简单！</p>
+
+        </div>
+        <footer class="article-footer">
+            
+
+    <div class="bdsharebuttonbox">
+    <a href="#" class="bds_more" data-cmd="more">分享到：</a>
+    <a href="#" class="bds_qzone" data-cmd="qzone" title="分享到QQ空间">QQ空间</a>
+    <a href="#" class="bds_tsina" data-cmd="tsina" title="分享到新浪微博">新浪微博</a>
+    <a href="#" class="bds_tqq" data-cmd="tqq" title="分享到腾讯微博">腾讯微博</a>
+    <a href="#" class="bds_renren" data-cmd="renren" title="分享到人人网">人人网</a>
+    <a href="#" class="bds_weixin" data-cmd="weixin" title="分享到微信">微信</a>
+</div>
+<script>
+window._bd_share_config={"common":{"bdSnsKey":{},"bdText":"","bdMini":"2","bdMiniList":false,"bdPic":"","bdStyle":"0","bdSize":"16"},"share":{"bdSize":16}};with(document)0[(getElementsByTagName('head')[0]||body).appendChild(createElement('script')).src='http://bdimg.share.baidu.com/static/api/js/share.js?v=89860593.js?cdnversion='+~(-new Date()/36e5)];
+</script>
+<style>
+    .bdshare_popup_box {
+        border-radius: 4px;
+        border: #e1e1e1 solid 1px;
+    }
+    .bdshare-button-style0-16 a,
+    .bdshare-button-style0-16 .bds_more {
+        padding-left: 20px;
+        margin: 6px 10px 6px 0;
+    }
+    .bdshare_dialog_list a,
+    .bdshare_popup_list a,
+    .bdshare_popup_bottom a {
+        font-family: 'Microsoft Yahei';
+    }
+    .bdshare_popup_top {
+        display: none;
+    }
+    .bdshare_popup_bottom {
+        height: auto;
+        padding: 5px;
+    }
+</style>
+
+
+
+        </footer>
+    </div>
+</article>
+
+    <section id="comments">
+    
+        
+    <div id="disqus_thread">
+        <noscript>Please enable JavaScript to view the <a href="//disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+    </div>
+
+    
+    </section>
+
+                        </div>
+                    </section>
+                    <aside id="sidebar">
+    <a class="sidebar-toggle" title="Expand Sidebar"><i class="toggle icon"></i></a>
+    <div class="sidebar-top">
+        <p>关注我 :</p>
+        <ul class="social-links">
+            
+                
+                <li>
+                    <a class="social-tooltip" title="github" href="https://github.com/yqhgit" target="_blank">
+                        <i class="icon fa fa-github"></i>
+                    </a>
+                </li>
+                
+            
+                
+                <li>
+                    <a class="social-tooltip" title="weibo" href="http://weibo.com/p/1005051960167364/home?from=page_100505&mod=TAB&is_hot=1#place" target="_blank">
+                        <i class="icon fa fa-weibo"></i>
+                    </a>
+                </li>
+                
+            
+        </ul>
+    </div>
+    
+        
+<nav id="article-nav">
+    
+    
+        <a href="/2016/11/01/hello-world/" id="article-nav-older" class="article-nav-link-wrap">
+        <strong class="article-nav-caption">上一篇</strong>
+        <p class="article-nav-title">Hello World</p>
+        <i class="icon fa fa-chevron-left" id="icon-chevron-left"></i>
+        </a>
+    
+</nav>
+
+    
+    <div class="widgets-container">
+        
+            
+                
+    <div class="widget-wrap">
+        <h3 class="widget-title">最新文章</h3>
+        <div class="widget">
+            <ul id="recent-post" class="">
+                
+                    <li>
+                        
+                        <div class="item-thumbnail">
+                            <a href="/2016/11/08/urlmapping/" class="thumbnail">
+    
+    
+        <span class="thumbnail-image thumbnail-none"></span>
+    
+    
+</a>
+
+                        </div>
+                        
+                        <div class="item-inner">
+                            <p class="item-category"></p>
+                            <p class="item-title"><a href="/2016/11/08/urlmapping/" class="title"></a></p>
+                            <p class="item-date"><time datetime="2016-11-08T13:43:57.337Z" itemprop="datePublished">2016-11-08</time></p>
+                        </div>
+                    </li>
+                
+                    <li>
+                        
+                        <div class="item-thumbnail">
+                            <a href="/2016/11/01/hello-world/" class="thumbnail">
+    
+    
+        <span style="background-image:url(images/logo-header.png)" alt="Hello World" class="thumbnail-image"></span>
+    
+    
+</a>
+
+                        </div>
+                        
+                        <div class="item-inner">
+                            <p class="item-category"></p>
+                            <p class="item-title"><a href="/2016/11/01/hello-world/" class="title">Hello World</a></p>
+                            <p class="item-date"><time datetime="2016-11-01T15:39:57.377Z" itemprop="datePublished">2016-11-01</time></p>
+                        </div>
+                    </li>
+                
+            </ul>
+        </div>
+    </div>
+
+            
+                
+
+            
+                
+    <div class="widget-wrap widget-list">
+        <h3 class="widget-title">归档</h3>
+        <div class="widget">
+            <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/11/">十一月 2016</a><span class="archive-list-count">2</span></li></ul>
+        </div>
+    </div>
+
+
+            
+                
+
+            
+                
+
+            
+                
+    <div class="widget-wrap widget-list">
+        <h3 class="widget-title">链接</h3>
+        <div class="widget">
+            <ul>
+                
+                    <li>
+                        <a href="http://hexo.io">Hexo</a>
+                    </li>
+                
+            </ul>
+        </div>
+    </div>
+
+
+            
+        
+    </div>
+</aside>
+                </div>
+            </div>
+        </div>
+        <footer id="footer">
+    <div class="container">
+        <div class="container-inner">
+            <a id="back-to-top" href="javascript:;"><i class="icon fa fa-angle-up"></i></a>
+            <div class="credit">
+                <h1 class="logo-wrap">
+                    <a href="/" class="logo"></a>
+                </h1>
+                <p>&copy; 2016 Mr.Young</p>
+                <p>Powered by <a href="//hexo.io/" target="_blank">Hexo</a>. Theme by <a href="//github.com/ppoffice" target="_blank">PPOffice</a></p>
+            </div>
+        </div>
+    </div>
+</footer>
+        
+    
+    <script>
+    var disqus_shortname = 'hexo-theme-hueman';
+    
+    
+    var disqus_url = 'http://yoursite.com/2016/11/08/urlmapping/';
+    
+    (function() {
+    var dsq = document.createElement('script');
+    dsq.type = 'text/javascript';
+    dsq.async = true;
+    dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+    (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+    </script>
+
+
+
+    
+        <script src="/vendor/lightgallery/js/lightgallery.min.js"></script>
+        <script src="/vendor/lightgallery/js/lg-thumbnail.min.js"></script>
+        <script src="/vendor/lightgallery/js/lg-pager.min.js"></script>
+        <script src="/vendor/lightgallery/js/lg-autoplay.min.js"></script>
+        <script src="/vendor/lightgallery/js/lg-fullscreen.min.js"></script>
+        <script src="/vendor/lightgallery/js/lg-zoom.min.js"></script>
+        <script src="/vendor/lightgallery/js/lg-hash.min.js"></script>
+        <script src="/vendor/lightgallery/js/lg-share.min.js"></script>
+        <script src="/vendor/lightgallery/js/lg-video.min.js"></script>
+    
+
+
+<!-- Custom Scripts -->
+<script src="/js/main.js"></script>
+
+    </div>
+</body>
+</html>

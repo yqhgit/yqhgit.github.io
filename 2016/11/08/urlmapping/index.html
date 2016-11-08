@@ -9,18 +9,20 @@
         <meta name="keywords" content="" />
     
     <meta name="description" content="前景介绍 　　注解是java1.5之后引入的特性，之前写web应用时通常都是通过在web.xml配置servlet和url的映射，这种情况web应用接口数量庞大不说开发人员通常需要写多个servlet或者是在单个servlet中完成url的判断后再引入到业务逻辑，而注解映射相比显得非常简洁，由于少了xml配置和xml的解析功能使得开发效率也有很大的提升。  
- 　　关于接口映射这块Spring m">
+ 　　关于接口映射这块Spring">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Java技能之：用注解实现接口映射">
 <meta property="og:url" content="http://yoursite.com/2016/11/08/urlmapping/index.html">
 <meta property="og:site_name" content="Mr.Young">
 <meta property="og:description" content="前景介绍 　　注解是java1.5之后引入的特性，之前写web应用时通常都是通过在web.xml配置servlet和url的映射，这种情况web应用接口数量庞大不说开发人员通常需要写多个servlet或者是在单个servlet中完成url的判断后再引入到业务逻辑，而注解映射相比显得非常简洁，由于少了xml配置和xml的解析功能使得开发效率也有很大的提升。  
- 　　关于接口映射这块Spring m">
-<meta property="og:updated_time" content="2016-11-08T13:52:07.522Z">
+ 　　关于接口映射这块Spring">
+<meta property="og:image" content="http://i1.piimg.com/567571/2f4133d12983549f.jpg">
+<meta property="og:updated_time" content="2016-11-08T14:07:29.401Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Java技能之：用注解实现接口映射">
 <meta name="twitter:description" content="前景介绍 　　注解是java1.5之后引入的特性，之前写web应用时通常都是通过在web.xml配置servlet和url的映射，这种情况web应用接口数量庞大不说开发人员通常需要写多个servlet或者是在单个servlet中完成url的判断后再引入到业务逻辑，而注解映射相比显得非常简洁，由于少了xml配置和xml的解析功能使得开发效率也有很大的提升。  
- 　　关于接口映射这块Spring m">
+ 　　关于接口映射这块Spring">
+<meta name="twitter:image" content="http://i1.piimg.com/567571/2f4133d12983549f.jpg">
     
 
     
@@ -155,7 +157,8 @@ var _hmt = _hmt || [];
         
         
         <div class="article-entry" itemprop="articleBody">
-            <h2 id="前景介绍"><a href="#前景介绍" class="headerlink" title="前景介绍"></a>前景介绍</h2><p> 　　注解是java1.5之后引入的特性，之前写web应用时通常都是通过在web.xml配置servlet和url的映射，这种情况web应用接口数量庞大不说开发人员通常需要写多个servlet或者是在单个servlet中完成url的判断后再引入到业务逻辑，而注解映射相比显得非常简洁，由于少了xml配置和xml的解析功能使得开发效率也有很大的提升。  </p>
+            <p><img src="http://i1.piimg.com/567571/2f4133d12983549f.jpg" alt=""></p>
+<h3 id="前景介绍"><a href="#前景介绍" class="headerlink" title="前景介绍"></a>前景介绍</h3><p> 　　注解是java1.5之后引入的特性，之前写web应用时通常都是通过在web.xml配置servlet和url的映射，这种情况web应用接口数量庞大不说开发人员通常需要写多个servlet或者是在单个servlet中完成url的判断后再引入到业务逻辑，而注解映射相比显得非常简洁，由于少了xml配置和xml的解析功能使得开发效率也有很大的提升。  </p>
 <p> 　　关于接口映射这块Spring mvc已经有了很好的实现了，但通常我们自己在开发时通常使用DispatchServlet接收到Request后通常需要根据业务场景完成一些预操作，比如参数校验，请求权限或者安全方面的校验成功之后才通过Handler将请求传递到业务逻辑层，所以学会自己开发接口映射显得尤为重要。完成一个接口映射功能其实非常简单，本文将从下面四个步骤来给大家详细介绍。</p>
 <h3 id="定义注解元数据"><a href="#定义注解元数据" class="headerlink" title="定义注解元数据"></a>定义注解元数据</h3><p> 　　由于注解是在运行时统一加载的所以RetentionPolicy为RUNTIME，而一个接口通常对应这一类服务的单个方法所以ElementType为Method类型。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">@Target(ElementType.METHOD)</div><div class="line">@Retention(RetentionPolicy.RUNTIME)</div><div class="line">public @interface UrlMapping &#123;</div><div class="line">	String url() default &quot;&quot;;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
 <h3 id="注解到接口的映射Map的导出类"><a href="#注解到接口的映射Map的导出类" class="headerlink" title="注解到接口的映射Map的导出类"></a>注解到接口的映射Map的导出类</h3><p>　　这里我们用到了Spring框架的实例工厂功能， 通过该功能来加载所有提供服务的类，即实现了Exportable接口的类，然后在类中查找含有UrlMapping注解的方法，通过反射拿到方法的相关信息创建服务调用单位InvocationUnit，最后加入到Map中，而Map的key为请求的Url，即通过UrlMaping注解映射到url变量的值。<br>这里可以通过Spring的MapFactoryBean完成映射键值对的全局共享。到此我们已经拿到了所有的接口映射的Map，最后需要一个RequestHandler来完成接口的调用即可。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div></pre></td><td class="code"><pre><div class="line">public class ServiceExporter implements InitializingBean, ApplicationContextAware</div><div class="line">&#123;</div><div class="line">	private ApplicationContext appContext;</div><div class="line"></div><div class="line">	private ConcurrentHashMap&lt;String, InvocationUnit&gt; urlMappings;</div><div class="line"></div><div class="line">	public void afterPropertiesSet() throws Exception</div><div class="line">	&#123;</div><div class="line">		Map&lt;String, Exportable&gt; exportMap = appContext.getBeansOfType(Exportable.class);</div><div class="line"></div><div class="line">		convert(new ArrayList&lt;Exportable&gt;(exportMap.values()));</div><div class="line">	&#125;</div><div class="line"></div><div class="line">	public void setApplicationContext(ApplicationContext arg0) throws BeansException</div><div class="line">	&#123;</div><div class="line">		appContext = arg0;</div><div class="line">	&#125;</div><div class="line"></div><div class="line">	@SuppressWarnings(&quot;rawtypes&quot;)</div><div class="line">	private void convert(List&lt;? extends Exportable&gt; list)</div><div class="line">	&#123;</div><div class="line">		for (Exportable exportable : list)</div><div class="line">		&#123;</div><div class="line">			Class clazz = exportable.getClass();</div><div class="line">			Method[] methods = clazz.getMethods();</div><div class="line">			for (Method method : methods)</div><div class="line">			&#123;</div><div class="line">				UrlMapping urlMapping = method.getAnnotation(UrlMapping.class);</div><div class="line">				if(urlMapping == null)&#123;</div><div class="line">					continue;</div><div class="line">				&#125;</div><div class="line">				urlMappings.put(urlMapping.url(), new InvocationUnit(method, clazz, method.getReturnType()));</div><div class="line">			&#125;</div><div class="line">		&#125;</div><div class="line">	&#125;</div><div class="line"></div><div class="line">	public ConcurrentHashMap&lt;String, InvocationUnit&gt; getUrlMappings()</div><div class="line">	&#123;</div><div class="line">		return urlMappings;</div><div class="line">	&#125;</div><div class="line"></div><div class="line">	public void setUrlMappings(ConcurrentHashMap&lt;String, InvocationUnit&gt; urlMappings)</div><div class="line">	&#123;</div><div class="line">		this.urlMappings = urlMappings;</div><div class="line">	&#125;</div><div class="line"></div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
@@ -246,17 +249,6 @@ window._bd_share_config={"common":{"bdSnsKey":{},"bdText":"","bdMini":"2","bdMin
     </div>
     
         
-<nav id="article-nav">
-    
-    
-        <a href="/2016/11/01/hello-world/" id="article-nav-older" class="article-nav-link-wrap">
-        <strong class="article-nav-caption">上一篇</strong>
-        <p class="article-nav-title">Hello World</p>
-        <i class="icon fa fa-chevron-left" id="icon-chevron-left"></i>
-        </a>
-    
-</nav>
-
     
     <div class="widgets-container">
         
@@ -273,7 +265,7 @@ window._bd_share_config={"common":{"bdSnsKey":{},"bdText":"","bdMini":"2","bdMin
                             <a href="/2016/11/08/urlmapping/" class="thumbnail">
     
     
-        <span class="thumbnail-image thumbnail-none"></span>
+        <span style="background-image:url(http://i1.piimg.com/567571/2f4133d12983549f.jpg)" alt="Java技能之：用注解实现接口映射" class="thumbnail-image"></span>
     
     
 </a>
@@ -284,26 +276,6 @@ window._bd_share_config={"common":{"bdSnsKey":{},"bdText":"","bdMini":"2","bdMin
                             <p class="item-category"></p>
                             <p class="item-title"><a href="/2016/11/08/urlmapping/" class="title">Java技能之：用注解实现接口映射</a></p>
                             <p class="item-date"><time datetime="2016-11-08T13:43:57.337Z" itemprop="datePublished">2016-11-08</time></p>
-                        </div>
-                    </li>
-                
-                    <li>
-                        
-                        <div class="item-thumbnail">
-                            <a href="/2016/11/01/hello-world/" class="thumbnail">
-    
-    
-        <span style="background-image:url(images/logo-header.png)" alt="Hello World" class="thumbnail-image"></span>
-    
-    
-</a>
-
-                        </div>
-                        
-                        <div class="item-inner">
-                            <p class="item-category"></p>
-                            <p class="item-title"><a href="/2016/11/01/hello-world/" class="title">Hello World</a></p>
-                            <p class="item-date"><time datetime="2016-11-01T15:39:57.377Z" itemprop="datePublished">2016-11-01</time></p>
                         </div>
                     </li>
                 
@@ -319,7 +291,7 @@ window._bd_share_config={"common":{"bdSnsKey":{},"bdText":"","bdMini":"2","bdMin
     <div class="widget-wrap widget-list">
         <h3 class="widget-title">归档</h3>
         <div class="widget">
-            <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/11/">十一月 2016</a><span class="archive-list-count">2</span></li></ul>
+            <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/11/">十一月 2016</a><span class="archive-list-count">1</span></li></ul>
         </div>
     </div>
 
